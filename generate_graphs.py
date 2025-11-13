@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Graph Generation Script
+Graph Generation Script - Enhanced Visualization
 Generates all experimental result graphs for both algorithms
 """
 
@@ -66,6 +66,9 @@ def generate_greedy_graphs():
     plt.tight_layout()
     plt.savefig('experimental_results/VM_performance_dashboard.png', dpi=300, bbox_inches='tight')
     print("Created VM_performance_dashboard.png")
+    
+    # Create efficiency comparison visualization
+    create_efficiency_comparison(sizes_array, times_array)
     
     # Create realistic scenario timeline
     create_timeline_visualization(selected, rejected, reservations)
@@ -206,6 +209,9 @@ def generate_divide_conquer_graphs():
     plt.savefig('experimental_results/datacenter_performance_dashboard.png', dpi=300, bbox_inches='tight')
     print("Created datacenter_performance_dashboard.png")
     
+    # Create complexity distribution visualization
+    create_complexity_distribution(dc_results, bf_results)
+    
     # Create datacenter location visualization
     create_datacenter_map_visualization(datacenters, dc_result)
 
@@ -252,6 +258,100 @@ def create_datacenter_map_visualization(datacenters, result):
     plt.savefig('experimental_results/datacenter_map_analysis.png', dpi=300, bbox_inches='tight')
     print("Created datacenter_map_analysis.png")
     plt.close()
+
+
+def create_efficiency_comparison(sizes_array, times_array):
+    """Create efficiency comparison visualization for greedy algorithm."""
+    
+    fig, ax = plt.subplots(figsize=(12, 6))
+    
+    # Calculate efficiency metrics
+    # Efficiency = Operations per millisecond
+    efficiency = sizes_array / (times_array * 1000)
+    
+    # Create bar chart with gradient colors
+    colors = plt.cm.RdYlGn(np.linspace(0.3, 0.9, len(sizes_array)))
+    bars = ax.bar(range(len(sizes_array)), efficiency, color=colors, alpha=0.8, edgecolor='black', linewidth=1.5)
+    
+    # Add value labels on bars
+    for i, (bar, eff) in enumerate(zip(bars, efficiency)):
+        ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + max(efficiency)*0.02,
+               f'{eff:.0f}', ha='center', va='bottom', fontweight='bold', fontsize=10)
+    
+    # Customize plot
+    ax.set_xlabel('Input Size', fontsize=12, fontweight='bold')
+    ax.set_ylabel('Efficiency (Operations/ms)', fontsize=12, fontweight='bold')
+    ax.set_title('Greedy Algorithm Efficiency Improvement\nOperations Processed Per Millisecond', 
+                fontsize=14, fontweight='bold')
+    ax.set_xticks(range(len(sizes_array)))
+    ax.set_xticklabels([f'{int(s)}' for s in sizes_array])
+    ax.grid(True, alpha=0.3, axis='y')
+    
+    # Add trend line
+    z = np.polyfit(range(len(sizes_array)), efficiency, 2)
+    p = np.poly1d(z)
+    ax.plot(range(len(sizes_array)), p(range(len(sizes_array))), 
+           'r--', linewidth=2, alpha=0.6, label='Trend')
+    ax.legend()
+    
+    plt.tight_layout()
+    plt.savefig('experimental_results/greedy_efficiency_comparison.png', dpi=300, bbox_inches='tight')
+    print("Created greedy_efficiency_comparison.png")
+    plt.close()
+
+
+def create_complexity_distribution(dc_results, bf_results):
+    """Create complexity distribution visualization for divide & conquer vs brute force."""
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    fig.suptitle('Algorithm Complexity Distribution Analysis', fontsize=16, fontweight='bold')
+    
+    # Extract data
+    dc_sizes = np.array([r[0] for r in dc_results])
+    dc_times = np.array([r[1] for r in dc_results])
+    
+    # Plot 1: Time complexity distribution
+    if bf_results:
+        bf_sizes = np.array([r[0] for r in bf_results])
+        bf_times = np.array([r[1] for r in bf_results])
+        
+        # Normalize times for comparison
+        dc_normalized = dc_times / dc_times.max()
+        bf_normalized = bf_times / bf_times.max()
+        
+        x = np.arange(len(dc_sizes))
+        width = 0.35
+        
+        bars1 = ax1.bar(x - width/2, dc_normalized, width, label='Divide & Conquer', 
+                        color='lightblue', alpha=0.8, edgecolor='navy', linewidth=1.5)
+        bars2 = ax1.bar(x + width/2, bf_normalized, width, label='Brute Force', 
+                        color='lightcoral', alpha=0.8, edgecolor='darkred', linewidth=1.5)
+        
+        ax1.set_xlabel('Input Size', fontsize=11, fontweight='bold')
+        ax1.set_ylabel('Normalized Execution Time', fontsize=11, fontweight='bold')
+        ax1.set_title('Time Complexity Comparison (Normalized)', fontsize=12, fontweight='bold')
+        ax1.set_xticks(x)
+        ax1.set_xticklabels([f'{int(s)}' for s in dc_sizes])
+        ax1.legend()
+        ax1.grid(True, alpha=0.3, axis='y')
+    
+    # Plot 2: Speedup factor
+    speedup = (dc_times.max() / dc_times) if len(dc_times) > 0 else []
+    colors_speedup = plt.cm.viridis(np.linspace(0, 1, len(dc_sizes)))
+    
+    ax2.plot(dc_sizes, speedup, 'o-', linewidth=2.5, markersize=10, 
+            color='darkgreen', markerfacecolor='lightgreen', markeredgewidth=2)
+    ax2.fill_between(dc_sizes, speedup, alpha=0.3, color='green')
+    ax2.set_xlabel('Input Size', fontsize=11, fontweight='bold')
+    ax2.set_ylabel('Speedup Factor', fontsize=11, fontweight='bold')
+    ax2.set_title('Algorithm Speedup Improvement', fontsize=12, fontweight='bold')
+    ax2.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig('experimental_results/complexity_distribution.png', dpi=300, bbox_inches='tight')
+    print("Created complexity_distribution.png")
+    plt.close()
+
 
 
 def main():
