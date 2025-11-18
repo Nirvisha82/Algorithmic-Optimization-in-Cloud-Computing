@@ -1,0 +1,74 @@
+{
+  "nodes": [
+    {
+      "file": ".gitignore",
+      "language": "",
+      "dependencies": [],
+      "exports": [],
+      "imports": []
+    },
+    {
+      "file": "README.md",
+      "language": "markdown",
+      "dependencies": [],
+      "exports": [],
+      "imports": []
+    },
+    {
+      "file": "datacenter_proximity_implementation.py",
+      "language": "python",
+      "dependencies": [],
+      "exports": [],
+      "imports": [
+        "math",
+        "time",
+        "random",
+        "List,",
+        "dataclass",
+        "numpy"
+      ]
+    },
+    {
+      "file": "generate_graphs.py",
+      "language": "python",
+      "dependencies": [],
+      "exports": [],
+      "imports": [
+        "os",
+        "matplotlib.pyplot",
+        "numpy",
+        "(",
+        "(",
+        "Patch",
+        "traceback"
+      ]
+    },
+    {
+      "file": "test_project.py",
+      "language": "python",
+      "dependencies": [],
+      "exports": [],
+      "imports": [
+        "create_realistic_scenario,",
+        "create_realistic_datacenters,",
+        "generate_greedy_graphs",
+        "traceback"
+      ]
+    },
+    {
+      "file": "vm_scheduler_implementation.py",
+      "language": "python",
+      "dependencies": [],
+      "exports": [],
+      "imports": [
+        "datetime,",
+        "List,",
+        "time",
+        "random",
+        "numpy"
+      ]
+    }
+  ],
+  "generated_at": "2025-11-18T14:30:21.9022544-05:00",
+  "repo_url": ""
+}
